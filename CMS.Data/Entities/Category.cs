@@ -1,7 +1,8 @@
 ﻿/*
  * Ho Va Ten: Mai Hong Phuc
  * mssv: 2123110025
- * class: category
+ * Ngày tạo 14/05/2026 - 20:00
+ *1. Mục đích: Tạo lớp Category để quản lý thông tin về danh mục bài viết trong hệ thống CMS.
  */
 using System;
 using System.Collections.Generic;
