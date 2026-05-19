@@ -2,6 +2,7 @@
  * Ho Va Ten: Mai Hong Phuc
  * mssv: 2123110025
  * class: category
+ * 1. Id: int, primary key
  */
 using System;
 using System.Collections.Generic;
