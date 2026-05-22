@@ -1,0 +1,43 @@
+﻿@model IEnumerable<CMS.Data.Entities.Post>
+
+<h2 class="text-primary mb-3">
+    DANH SÁCH BÀI VIẾT
+</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Hình ảnh</th>
+            <th>Tiêu đề</th>
+            <th>Nội dung</th>
+            <th>Ngày tạo</th>
+            <th>CategoryId</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+
+                <td>
+                    <img src="@item.ImageUrl"
+                         width="120"
+                         class="img-thumbnail" />
+                </td>
+
+                <td>@item.Title</td>
+
+                <td>@item.Content</td>
+
+                <td>
+                    @item.CreatedDate.ToString("dd/MM/yyyy")
+                </td>
+
+                <td>@item.CategoryId</td>
+            </tr>
+        }
+    </tbody>
+</table>

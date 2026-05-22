@@ -1,0 +1,74 @@
+﻿@model IEnumerable<CMS.Data.Entities.User>
+
+<h2 class="text-success mb-3">
+    DANH SÁCH NGƯỜI DÙNG
+</h2>
+
+<div class="mb-3">
+    <a href="/User/Create" class="btn btn-success">
+        + Thêm người dùng
+    </a>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên đăng nhập</th>
+            <th>Mật khẩu</th>
+            <th>Họ tên</th>
+            <th>Vai trò</th>
+            <th width="220">Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Id</td>
+
+                <td>@item.Username</td>
+
+                <td>@item.PasswordHash</td>
+
+                <td>@item.FullName</td>
+
+                <td>
+                    @if (item.Role == "Quản trị viên")
+                    {
+                        <span class="badge bg-danger">
+                            @item.Role
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-primary">
+                            @item.Role
+                        </span>
+                    }
+                </td>
+
+                <td>
+                    <a href="/User/Details/@item.Id"
+                       class="btn btn-info btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <a href="/User/Edit/@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/User/Delete/@item.Id"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        Xóa
+                    </a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
