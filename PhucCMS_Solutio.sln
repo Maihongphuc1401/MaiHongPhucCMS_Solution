@@ -25,6 +25,10 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "cms.frontend", "cms.fronten
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "65376"
+<<<<<<< Updated upstream
+=======
+		SlnRelativePath = "cms.frontend\"
+>>>>>>> Stashed changes
 	EndProjectSection
 EndProject
 Global
