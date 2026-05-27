@@ -1,0 +1,26 @@
+﻿@model CMS.Data.Entities.Category
+
+<h2>THÊM DANH MỤC</h2>
+
+<form method="post">
+
+    <div class="mb-3">
+        <label>Tên danh mục</label>
+
+        <input asp-for="Name"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+
+        <textarea asp-for="Description"
+                  class="form-control">
+        </textarea>
+    </div>
+
+    <button class="btn btn-success">
+        Lưu
+    </button>
+
+</form>

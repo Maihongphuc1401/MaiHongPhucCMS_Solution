@@ -4,6 +4,12 @@
     DANH SÁCH BÀI VIẾT
 </h2>
 
+<div class="mb-3">
+    <a href="/Post/Create" class="btn btn-success">
+        + Thêm bài viết
+    </a>
+</div>
+
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
@@ -13,6 +19,7 @@
             <th>Nội dung</th>
             <th>Ngày tạo</th>
             <th>CategoryId</th>
+            <th width="220">Chức năng</th>
         </tr>
     </thead>
 
@@ -20,6 +27,7 @@
         @foreach (var item in Model)
         {
             <tr>
+
                 <td>@item.Id</td>
 
                 <td>
@@ -37,6 +45,27 @@
                 </td>
 
                 <td>@item.CategoryId</td>
+
+                <td>
+
+                    <a href="/Post/Details/@item.Id"
+                       class="btn btn-info btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <a href="/Post/Edit/@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/Post/Delete/@item.Id"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        Xóa
+                    </a>
+
+                </td>
+
             </tr>
         }
     </tbody>

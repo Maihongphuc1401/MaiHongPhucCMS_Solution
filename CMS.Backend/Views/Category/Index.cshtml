@@ -1,22 +1,62 @@
 ﻿@model IEnumerable<CMS.Data.Entities.Category>
 
-<h2 class="text-primary">DANH SÁCH DANH MỤC (DỮ LIỆU MẪU)</h2>
-<table class="table table-bordered">
-    <thead>
+<h2 class="text-primary mb-3">
+    DANH SÁCH DANH MỤC
+</h2>
+
+<div class="mb-3">
+    <a href="/Category/Create"
+       class="btn btn-success">
+        + Thêm danh mục
+    </a>
+</div>
+
+<table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
         <tr>
             <th>ID</th>
             <th>Tên danh mục</th>
             <th>Mô tả</th>
+            <th width="220">Chức năng</th>
         </tr>
     </thead>
+
     <tbody>
+
         @foreach (var item in Model)
         {
             <tr>
+
                 <td>@item.Id</td>
+
                 <td>@item.Name</td>
+
                 <td>@item.Description</td>
+
+                <td>
+
+                    <a href="/Category/Details/@item.Id"
+                       class="btn btn-info btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <a href="/Category/Edit/@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="/Category/Delete/@item.Id"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        Xóa
+                    </a>
+
+                </td>
+
             </tr>
         }
+
     </tbody>
+
 </table>

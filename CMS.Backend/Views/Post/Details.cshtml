@@ -1,0 +1,27 @@
+﻿@model CMS.Data.Entities.Post
+
+<h2>CHI TIẾT BÀI VIẾT</h2>
+
+<div class="card p-3">
+
+    <img src="@Model.ImageUrl"
+         width="250"
+         class="img-thumbnail mb-3" />
+
+    <h3>@Model.Title</h3>
+
+    <p>
+        @Model.Content
+    </p>
+
+    <p>
+        <b>Ngày tạo:</b>
+        @Model.CreatedDate.ToString("dd/MM/yyyy")
+    </p>
+
+    <p>
+        <b>CategoryId:</b>
+        @Model.CategoryId
+    </p>
+
+</div>
