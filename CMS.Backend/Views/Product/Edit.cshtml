@@ -1,0 +1,61 @@
+﻿@model CMS.Data.Entities.Product
+
+<h2 class="text-warning mb-3">
+    SỬA SẢN PHẨM
+</h2>
+
+<form method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label>Tên sản phẩm</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea asp-for="Description"
+                  class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Giá</label>
+        <input asp-for="Price"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Số lượng</label>
+        <input asp-for="StockQuantity"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Hình ảnh URL</label>
+        <input asp-for="ImageUrl"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Danh mục</label>
+
+        <select asp-for="CategoryProductId"
+                class="form-control">
+
+            @foreach (var item in ViewBag.CategoryProducts)
+            {
+            <option value="@item.Id">
+                @item.Name
+            </option>
+            }
+
+        </select>
+    </div>
+
+    <button type="submit"
+            class="btn btn-warning">
+        Cập nhật
+    </button>
+
+</form>

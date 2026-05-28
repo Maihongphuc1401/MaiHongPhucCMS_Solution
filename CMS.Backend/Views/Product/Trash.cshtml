@@ -1,0 +1,66 @@
+﻿@model IEnumerable<CMS.Data.Entities.Product>
+
+<h2 class="text-danger mb-3">
+    THÙNG RÁC SẢN PHẨM
+</h2>
+
+<a asp-action="Index"
+   class="btn btn-primary mb-3">
+    Quay lại
+</a>
+
+<table class="table table-bordered">
+
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Hình ảnh</th>
+            <th width="250">Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Id</td>
+
+                <td>@item.Name</td>
+
+                <td>
+                    <img src="@item.ImageUrl"
+                         width="100" />
+                </td>
+
+                <td>
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-info btn-sm">
+                        Chi tiết
+                    </a>
+
+                    <a asp-action="Restore"
+                       asp-route-id="@item.Id"
+                       class="btn btn-success btn-sm">
+                        Khôi phục
+                    </a>
+
+                    <a asp-action="Destroy"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Xóa vĩnh viễn?')">
+                        Xóa vĩnh viễn
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

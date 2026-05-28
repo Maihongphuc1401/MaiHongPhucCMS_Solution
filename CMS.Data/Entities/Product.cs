@@ -31,6 +31,7 @@ namespace CMS.Data.Entities
 
         [ForeignKey("CategoryProductId")]
         public virtual CategoryProduct? CategoryProduct { get; set; }
+        public int Status { get; set; } = 1;
     }
 
 }

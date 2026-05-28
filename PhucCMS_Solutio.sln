@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.Data", "CMS.Data\CMS.Data.csproj", "{6961350A-3E5F-461F-809C-AFB8E09DD34B}"
 EndProject
@@ -25,10 +25,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "cms.frontend", "cms.fronten
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "65376"
-<<<<<<< Updated upstream
-=======
 		SlnRelativePath = "cms.frontend\"
->>>>>>> Stashed changes
 	EndProjectSection
 EndProject
 Global
@@ -45,8 +42,15 @@ Global
 		{B9A0F8DB-A90E-4177-A26F-D0DE134F2C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9A0F8DB-A90E-4177-A26F-D0DE134F2C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9A0F8DB-A90E-4177-A26F-D0DE134F2C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC96697-7D92-84DD-AB7A-313652811C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC96697-7D92-84DD-AB7A-313652811C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC96697-7D92-84DD-AB7A-313652811C56}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC96697-7D92-84DD-AB7A-313652811C56}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C41E6118-711B-40E9-9099-9DF7CE4412E7}
 	EndGlobalSection
 EndGlobal
