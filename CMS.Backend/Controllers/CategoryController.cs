@@ -1,38 +1,32 @@
-﻿using CMS.Data.Entities;
+﻿using CMS.Data;
+using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
     public class CategoryController : Controller
     {
-        // Dữ liệu mẫu
-        static List<Category> list = new List<Category>
-        {
-            new Category
-            {
-                Id = 1,
-                Name = "Tin Công Nghệ",
-                Description = "Review Laptop, AI"
-            },
+        private readonly ApplicationDbContext _context;
 
-            new Category
-            {
-                Id = 2,
-                Name = "Giáo Dục",
-                Description = "Thông tin tuyển sinh"
-            }
-        };
+        public CategoryController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         // DANH SÁCH
         public IActionResult Index()
         {
+            var list = _context.Categories.ToList();
+
             return View(list);
         }
 
         // CHI TIẾT
         public IActionResult Details(int id)
         {
-            var category = list.FirstOrDefault(x => x.Id == id);
+            var category = _context.Categories
+                .FirstOrDefault(x => x.Id == id);
 
             return View(category);
         }
@@ -47,17 +41,22 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
-            category.Id = list.Max(x => x.Id) + 1;
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Add(category);
+                _context.SaveChanges();
 
-            list.Add(category);
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction("Index");
+            return View(category);
         }
 
         // FORM SỬA
         public IActionResult Edit(int id)
         {
-            var category = list.FirstOrDefault(x => x.Id == id);
+            var category = _context.Categories
+                .FirstOrDefault(x => x.Id == id);
 
             return View(category);
         }
@@ -66,20 +65,28 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Edit(Category category)
         {
-            var oldCategory = list.FirstOrDefault(x => x.Id == category.Id);
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Update(category);
+                _context.SaveChanges();
 
-            oldCategory.Name = category.Name;
-            oldCategory.Description = category.Description;
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction("Index");
+            return View(category);
         }
 
         // XÓA
         public IActionResult Delete(int id)
         {
-            var category = list.FirstOrDefault(x => x.Id == id);
+            var category = _context.Categories
+                .FirstOrDefault(x => x.Id == id);
 
-            list.Remove(category);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+            }
 
             return RedirectToAction("Index");
         }
