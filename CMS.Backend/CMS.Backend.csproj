@@ -23,4 +23,9 @@
     <ProjectReference Include="..\CMS.Data\CMS.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\posts\" />
+    <Folder Include="wwwroot\uploads\products\" />
+  </ItemGroup>
+
 </Project>

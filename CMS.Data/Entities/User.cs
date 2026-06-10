@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CMS.Data.Entities
 {
     public class User
     {
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string FullName { get; set; }
-        public string Role { get; set; } // Quản trị viên hoặc Biên tập viên
-    }
 
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
+        [StringLength(50, ErrorMessage = "Tên đăng nhập tối đa 50 ký tự")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        [StringLength(100, MinimumLength = 6,
+            ErrorMessage = "Mật khẩu từ 6 đến 100 ký tự")]
+        public string PasswordHash { get; set; }
+
+        [Required(ErrorMessage = "Họ tên không được để trống")]
+        [StringLength(100, ErrorMessage = "Họ tên tối đa 100 ký tự")]
+        public string FullName { get; set; }
+
+        [Required(ErrorMessage = "Vai trò không được để trống")]
+        public string Role { get; set; }
+    }
 }

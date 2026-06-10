@@ -1,93 +1,105 @@
-﻿using CMS.Data.Entities;
+﻿using CMS.Data;
+using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.Backend.Controllers
 {
     public class UserController : Controller
     {
-        // Dữ liệu mẫu
-        static List<User> list = new List<User>
-        {
-            new User
-            {
-                Id = 1,
-                Username = "admin",
-                PasswordHash = "123456",
-                FullName = "Mai Hồng Phúc",
-                Role = "Quản trị viên"
-            },
+        private readonly ApplicationDbContext _context;
 
-            new User
-            {
-                Id = 2,
-                Username = "editor01",
-                PasswordHash = "123456",
-                FullName = "Nguyễn Văn A",
-                Role = "Biên tập viên"
-            }
-        };
-
-        // HIỂN THỊ DANH SÁCH
-        public IActionResult Index()
+        public UserController(ApplicationDbContext context)
         {
-            return View(list);
+            _context = context;
         }
 
-        // CHI TIẾT
+        // Danh sách
+        public IActionResult Index()
+        {
+            return View(_context.Users.ToList());
+        }
+
+        // Chi tiết
         public IActionResult Details(int id)
         {
-            var user = list.FirstOrDefault(x => x.Id == id);
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+
+            if (user == null)
+                return NotFound();
 
             return View(user);
         }
 
-        // FORM THÊM
+        // Form thêm
         public IActionResult Create()
         {
             return View();
         }
 
-        // LƯU THÊM
+        // Lưu thêm
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(User user)
         {
-            user.Id = list.Max(x => x.Id) + 1;
+            if (!ModelState.IsValid)
+                return View(user);
 
-            list.Add(user);
+            _context.Users.Add(user);
+            _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
-        // FORM SỬA
+        // Form sửa
         public IActionResult Edit(int id)
         {
-            var user = list.FirstOrDefault(x => x.Id == id);
+            var user = _context.Users.Find(id);
+
+            if (user == null)
+                return NotFound();
 
             return View(user);
         }
 
-        // LƯU SỬA
+        // Lưu sửa
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(User user)
         {
-            var oldUser = list.FirstOrDefault(x => x.Id == user.Id);
+            if (!ModelState.IsValid)
+                return View(user);
 
-            oldUser.Username = user.Username;
-            oldUser.PasswordHash = user.PasswordHash;
-            oldUser.FullName = user.FullName;
-            oldUser.Role = user.Role;
+            _context.Users.Update(user);
+            _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
-        // XÓA
+        // Xác nhận xóa
         public IActionResult Delete(int id)
         {
-            var user = list.FirstOrDefault(x => x.Id == id);
+            var user = _context.Users.Find(id);
 
-            list.Remove(user);
+            if (user == null)
+                return NotFound();
 
-            return RedirectToAction("Index");
+            return View(user);
+        }
+
+        // Xóa thật
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var user = _context.Users.Find(id);
+
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

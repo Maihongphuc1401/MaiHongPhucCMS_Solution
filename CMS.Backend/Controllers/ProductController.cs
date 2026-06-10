@@ -2,16 +2,20 @@
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Hosting;
 namespace CMS.Backend.Controllers
 {
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(
+     ApplicationDbContext context,
+     IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // DANH SÁCH
@@ -56,35 +60,123 @@ namespace CMS.Backend.Controllers
 
         // THÊM
         [HttpPost]
-        public IActionResult Create(Product product)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Product product, IFormFile imageFile)
         {
-            _context.Products.Add(product);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CategoryProducts =
+                    _context.CategoriesProducts.ToList();
 
+                return View(product);
+            }
+
+            if (imageFile == null)
+            {
+                ModelState.AddModelError("", "Vui lòng chọn hình ảnh");
+
+                ViewBag.CategoryProducts =
+                    _context.CategoriesProducts.ToList();
+
+                return View(product);
+            }
+
+            string extension =
+                Path.GetExtension(imageFile.FileName).ToLower();
+
+            string[] allowExt =
+            {
+        ".jpg",
+        ".jpeg",
+        ".png"
+    };
+
+            if (!allowExt.Contains(extension))
+            {
+                ModelState.AddModelError("",
+                    "Chỉ cho phép file JPG, JPEG, PNG");
+
+                ViewBag.CategoryProducts =
+                    _context.CategoriesProducts.ToList();
+
+                return View(product);
+            }
+
+            string fileName =
+                Guid.NewGuid().ToString() + extension;
+
+            string folder =
+                Path.Combine(_env.WebRootPath,
+                "uploads/products");
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            string path =
+                Path.Combine(folder, fileName);
+
+            using (var stream =
+                new FileStream(path, FileMode.Create))
+            {
+                imageFile.CopyTo(stream);
+            }
+
+            product.ImageUrl =
+                "/uploads/products/" + fileName;
+
+            product.Status = 1;
+
+            _context.Products.Add(product);
             _context.SaveChanges();
+
+            TempData["success"] =
+                "Thêm sản phẩm thành công";
 
             return RedirectToAction("Index");
         }
 
         // FORM SỬA
-        public IActionResult Edit(int id)
-        {
-            var product = _context.Products.Find(id);
-
-            ViewBag.CategoryProducts = _context.CategoriesProducts.ToList();
-
-            return View(product);
-        }
-
-        // SỬA
         [HttpPost]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(Product product, IFormFile imageFile)
         {
-            _context.Products.Update(product);
+            var oldProduct = _context.Products.Find(product.Id);
+
+            if (oldProduct == null)
+                return NotFound();
+
+            oldProduct.Name = product.Name;
+            oldProduct.Description = product.Description;
+            oldProduct.Price = product.Price;
+            oldProduct.StockQuantity = product.StockQuantity;
+            oldProduct.CategoryProductId = product.CategoryProductId;
+
+            if (imageFile != null)
+            {
+                string fileName =
+                    Guid.NewGuid().ToString()
+                    + Path.GetExtension(imageFile.FileName);
+
+                string path = Path.Combine(
+                    _env.WebRootPath,
+                    "uploads/products",
+                    fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    imageFile.CopyTo(stream);
+                }
+
+                oldProduct.ImageUrl =
+                    "/uploads/products/" + fileName;
+            }
 
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
 
         // XÓA MỀM
         public IActionResult Delete(int id)

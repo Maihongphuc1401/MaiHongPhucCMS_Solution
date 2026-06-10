@@ -1,10 +1,13 @@
 ﻿@model CMS.Data.Entities.Post
 
-<h2>SỬA BÀI VIẾT</h2>
+<h2 class="text-warning">
+    SỬA BÀI VIẾT
+</h2>
 
-<form method="post">
+<form method="post"
+      enctype="multipart/form-data">
 
-    <input type="hidden" asp-for="Id" />
+    <input asp-for="Id" type="hidden" />
 
     <div class="mb-3">
         <label>Tiêu đề</label>
@@ -15,23 +18,49 @@
     <div class="mb-3">
         <label>Nội dung</label>
         <textarea asp-for="Content"
-                  class="form-control">
-        </textarea>
+                  class="form-control"
+                  rows="5"></textarea>
     </div>
 
     <div class="mb-3">
-        <label>Link hình ảnh</label>
-        <input asp-for="ImageUrl"
-               class="form-control" />
+
+        <label>Ảnh hiện tại</label>
+
+        <br />
+
+        <img src="@Model.ImageUrl"
+             width="150"
+             class="img-thumbnail" />
+
     </div>
 
     <div class="mb-3">
-        <label>CategoryId</label>
-        <input asp-for="CategoryId"
-               class="form-control" />
+        <label>Chọn ảnh mới</label>
+
+        <input type="file"
+               name="imageFile"
+               class="form-control"
+               accept=".jpg,.jpeg,.png" />
     </div>
 
-    <button class="btn btn-warning">
+    <div class="mb-3">
+        <label>Danh mục</label>
+
+        <select asp-for="CategoryId"
+                class="form-control">
+
+            @foreach (var item in ViewBag.Categories)
+            {
+                <option value="@item.Id">
+                    @item.Name
+                </option>
+            }
+
+        </select>
+    </div>
+
+    <button type="submit"
+            class="btn btn-warning">
         Cập nhật
     </button>
 

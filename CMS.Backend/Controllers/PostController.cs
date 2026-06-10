@@ -1,44 +1,39 @@
-﻿using CMS.Data.Entities;
+﻿using CMS.Data;
+using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
     public class PostController : Controller
     {
-        // Dữ liệu mẫu
-        static List<Post> list = new List<Post>
-        {
-            new Post
-            {
-                Id = 1,
-                Title = "ASP.NET Core MVC",
-                Content = "Học ASP.NET Core MVC từ cơ bản đến nâng cao",
-                ImageUrl = "https://via.placeholder.com/120",
-                CreatedDate = DateTime.Now,
-                CategoryId = 1
-            },
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-            new Post
-            {
-                Id = 2,
-                Title = "Lập trình C#",
-                Content = "Các kiến thức nền tảng về C#",
-                ImageUrl = "https://via.placeholder.com/120",
-                CreatedDate = DateTime.Now,
-                CategoryId = 2
-            }
-        };
+        public PostController(
+            ApplicationDbContext context,
+            IWebHostEnvironment env)
+        {
+            _context = context;
+            _env = env;
+        }
 
         // DANH SÁCH
         public IActionResult Index()
         {
-            return View(list);
+            var posts = _context.Posts
+                .Include(x => x.Category)
+                .ToList();
+
+            return View(posts);
         }
 
         // CHI TIẾT
         public IActionResult Details(int id)
         {
-            var post = list.FirstOrDefault(x => x.Id == id);
+            var post = _context.Posts
+                .Include(x => x.Category)
+                .FirstOrDefault(x => x.Id == id);
 
             return View(post);
         }
@@ -46,18 +41,41 @@ namespace CMS.Backend.Controllers
         // FORM THÊM
         public IActionResult Create()
         {
+            ViewBag.Categories =
+                _context.Categories.ToList();
+
             return View();
         }
 
         // LƯU THÊM
         [HttpPost]
-        public IActionResult Create(Post post)
+        public IActionResult Create(Post post, IFormFile imageFile)
         {
-            post.Id = list.Max(x => x.Id) + 1;
+            if (imageFile != null)
+            {
+                string fileName =
+                    Guid.NewGuid().ToString() +
+                    Path.GetExtension(imageFile.FileName);
+
+                string path = Path.Combine(
+                    _env.WebRootPath,
+                    "uploads/posts",
+                    fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    imageFile.CopyTo(stream);
+                }
+
+                post.ImageUrl =
+                    "/uploads/posts/" + fileName;
+            }
 
             post.CreatedDate = DateTime.Now;
 
-            list.Add(post);
+            _context.Posts.Add(post);
+
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -65,21 +83,45 @@ namespace CMS.Backend.Controllers
         // FORM SỬA
         public IActionResult Edit(int id)
         {
-            var post = list.FirstOrDefault(x => x.Id == id);
+            var post = _context.Posts.Find(id);
+
+            ViewBag.Categories =
+                _context.Categories.ToList();
 
             return View(post);
         }
 
         // LƯU SỬA
         [HttpPost]
-        public IActionResult Edit(Post post)
+        public IActionResult Edit(Post post, IFormFile imageFile)
         {
-            var oldPost = list.FirstOrDefault(x => x.Id == post.Id);
+            var oldPost = _context.Posts.Find(post.Id);
 
             oldPost.Title = post.Title;
             oldPost.Content = post.Content;
-            oldPost.ImageUrl = post.ImageUrl;
             oldPost.CategoryId = post.CategoryId;
+
+            if (imageFile != null)
+            {
+                string fileName =
+                    Guid.NewGuid().ToString() +
+                    Path.GetExtension(imageFile.FileName);
+
+                string path = Path.Combine(
+                    _env.WebRootPath,
+                    "uploads/posts",
+                    fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    imageFile.CopyTo(stream);
+                }
+
+                oldPost.ImageUrl =
+                    "/uploads/posts/" + fileName;
+            }
+
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -87,9 +129,11 @@ namespace CMS.Backend.Controllers
         // XÓA
         public IActionResult Delete(int id)
         {
-            var post = list.FirstOrDefault(x => x.Id == id);
+            var post = _context.Posts.Find(id);
 
-            list.Remove(post);
+            _context.Posts.Remove(post);
+
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
