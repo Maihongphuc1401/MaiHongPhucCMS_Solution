@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
-
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -14,13 +14,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
+// CORS cho React
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-
     app.UseHsts();
 }
 
@@ -30,8 +40,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors("ReactPolicy");
+
 app.UseAuthorization();
 
+// API Controllers
+app.MapControllers();
+
+// MVC Controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

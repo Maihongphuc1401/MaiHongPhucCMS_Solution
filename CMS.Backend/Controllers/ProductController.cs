@@ -138,6 +138,16 @@ namespace CMS.Backend.Controllers
         }
 
         // FORM SỬA
+        public IActionResult Edit(int id)
+        {
+            var product =
+                _context.Products.Find(id);
+
+            ViewBag.CategoryProducts =
+                _context.CategoriesProducts.ToList();
+
+            return View(product);
+        }
         [HttpPost]
         public IActionResult Edit(Product product, IFormFile imageFile)
         {

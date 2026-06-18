@@ -1,0 +1,118 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model CMS.Data.Entities.Order
+
+<h2 class="text-warning mb-4">
+    SỬA ĐƠN HÀNG
+</h2>
+
+<form asp-action="Edit" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input asp-for="Id" type="hidden" />
+
+    <div asp-validation-summary="All"
+         class="alert alert-danger">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Ngày đặt hàng
+        </label>
+
+        <input asp-for="OrderDate"
+               type="datetime-local"
+               class="form-control" />
+
+        <span asp-validation-for="OrderDate"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Khách hàng
+        </label>
+
+        <select asp-for="CustomerId"
+                class="form-select">
+
+            <option value="">
+                -- Chọn khách hàng --
+            </option>
+
+            @foreach (var item in ViewBag.Customers)
+            {
+                <option value="@item.Id">
+                    @item.FullName
+                </option>
+            }
+
+        </select>
+
+        <span asp-validation-for="CustomerId"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Trạng thái
+        </label>
+
+        <select asp-for="Status"
+                class="form-select">
+
+            <option value="0">
+                Chờ duyệt
+            </option>
+
+            <option value="1">
+                Đang giao
+            </option>
+
+            <option value="2">
+                Hoàn thành
+            </option>
+
+        </select>
+
+        <span asp-validation-for="Status"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Ghi chú
+        </label>
+
+        <textarea asp-for="Notes"
+                  rows="4"
+                  class="form-control">
+        </textarea>
+
+        <span asp-validation-for="Notes"
+              class="text-danger">
+        </span>
+    </div>
+
+    <button type="submit"
+            class="btn btn-warning">
+        Cập nhật
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

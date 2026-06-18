@@ -1,0 +1,363 @@
+.product-detail {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+  padding: 3rem 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ==== ẢNH CHÍNH ==== */
+.product-image-section {
+  flex: 1 1 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-image-box {
+  width: 420px;
+  height: 420px;
+  background: #f9f9f9;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.main-image-box:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+}
+
+.main-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ✅ không méo ảnh */
+  transition: transform 0.35s ease;
+}
+
+.main-image-box:hover .main-product-image {
+  transform: scale(1.05);
+}
+
+/* ==== Thumbnail phụ ==== */
+.thumbnail-list {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.thumbnail {
+  width: 75px;
+  height: 75px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  object-fit: cover;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: 0.25s;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail.active {
+  border-color: #ff7b42;
+}
+
+/* ==== THÔNG TIN SẢN PHẨM ==== */
+.product-info-section {
+  flex: 1 1 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.product-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.category-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #888;
+}
+
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #aaa;
+  font-size: 17px;
+}
+
+.new-price {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ff7b42;
+}
+
+.product-desc {
+  color: #444;
+  font-size: 16px;
+  line-height: 1.7;
+  text-align: justify;
+  margin-top: 10px;
+}
+
+/* ==== Nút hành động ==== */
+.add-to-cart-btn {
+  background: linear-gradient(90deg, #ff7b42, #ff944f);
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 25px;
+  cursor: pointer;
+  transition: 0.3s;
+  align-self: flex-start;
+  box-shadow: 0 5px 12px rgba(255, 107, 53, 0.3);
+}
+
+.add-to-cart-btn:hover {
+  background: #e85a25;
+  transform: translateY(-2px);
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 992px) {
+  .product-detail {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+
+  .main-image-box {
+    width: 360px;
+    height: 360px;
+  }
+
+  .product-info-section {
+    text-align: center;
+    align-items: center;
+  }
+
+  .add-to-cart-btn {
+    align-self: center;
+  }
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 50px;
+  color: #666;
+}
+/* ==== SẢN PHẨM LIÊN QUAN ==== */
+.related-section {
+  margin-top: 4rem;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+
+.related-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.related-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.related-img-box {
+  position: relative;
+  height: 200px;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.related-img {
+  width: 80%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.related-card:hover .related-img {
+  transform: scale(1.05);
+}
+
+/* Overlay button */
+.overlay {
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.related-card:hover .overlay {
+  opacity: 1;
+}
+
+.view-btn,
+.cart-btn {
+  background: white;
+  border: 1px solid #ff6b35;
+  color: #ff6b35;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+
+.view-btn:hover,
+.cart-btn:hover {
+  background: #ff6b35;
+  color: white;
+}
+
+.related-info h6 {
+  font-weight: 600;
+  color: #222;
+}
+
+@media (max-width: 992px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ===== SẢN PHẨM CÙNG DANH MỤC - Recommended Items ===== */
+.related-section {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.related-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1.5rem;
+  text-transform: none;
+}
+
+/* Hàng ngang 4 sản phẩm */
+.related-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.related-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.related-item:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+.related-img-box {
+  height: 200px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.related-img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.related-item:hover .related-img {
+  transform: scale(1.05);
+}
+
+.related-info {
+  padding: 0.8rem 1rem 1rem;
+}
+
+.related-category {
+  color: #ff6b35;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.related-name {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4px;
+  min-height: 38px;
+}
+
+.related-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ff6b35;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .related-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .related-row {
+    grid-template-columns: 1fr;
+  }
+}
+

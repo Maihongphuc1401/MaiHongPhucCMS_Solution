@@ -1,0 +1,79 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model CMS.Data.Entities.Order
+
+<h2 class="text-success">
+    THÊM ĐƠN HÀNG
+</h2>
+
+<form method="post">
+
+    <div asp-validation-summary="All"
+         class="alert alert-danger">
+    </div>
+
+    <div class="mb-3">
+
+        <label>Khách hàng</label>
+
+        <select asp-for="CustomerId"
+                class="form-control">
+
+            <option value="">
+                -- Chọn khách hàng --
+            </option>
+
+            @foreach (var item in ViewBag.Customers)
+            {
+                <option value="@item.Id">
+                    @item.FullName
+                </option>
+            }
+
+        </select>
+
+        <span asp-validation-for="CustomerId"
+              class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Trạng thái</label>
+
+        <select asp-for="Status"
+                class="form-control">
+
+            <option value="0">Chờ duyệt</option>
+            <option value="1">Đang giao</option>
+            <option value="2">Hoàn thành</option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Ghi chú</label>
+
+        <textarea asp-for="Notes"
+                  class="form-control"></textarea>
+
+        <span asp-validation-for="Notes"
+              class="text-danger"></span>
+
+    </div>
+
+    <button class="btn btn-success">
+        Lưu đơn hàng
+    </button>
+    ```
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

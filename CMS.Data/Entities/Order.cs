@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CMS.Data.Entities
 {
     public class Order
@@ -13,12 +14,18 @@ namespace CMS.Data.Entities
         [Key]
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Ngày đặt hàng không được để trống")]
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
         public int CustomerId { get; set; }
 
-        public int Status { get; set; } // 0: Chờ duyệt, 1: Đang giao, 2: Đã xong
+        [Range(0, 2,
+            ErrorMessage = "Trạng thái đơn hàng không hợp lệ")]
+        public int Status { get; set; }
 
+        [StringLength(500,
+            ErrorMessage = "Ghi chú tối đa 500 ký tự")]
         public string? Notes { get; set; }
 
         [ForeignKey("CustomerId")]
@@ -26,5 +33,4 @@ namespace CMS.Data.Entities
 
         public virtual ICollection<OrderDetail>? OrderDetails { get; set; }
     }
-
 }

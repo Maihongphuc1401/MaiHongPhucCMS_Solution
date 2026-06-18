@@ -7,31 +7,40 @@
 <form method="post"
       enctype="multipart/form-data">
 
+    <div asp-validation-summary="All"
+         class="text-danger mb-3">
+    </div>
+
     <input asp-for="Id" type="hidden" />
 
     <div class="mb-3">
         <label>Tiêu đề</label>
+
         <input asp-for="Title"
                class="form-control" />
+
+        <span asp-validation-for="Title"
+              class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label>Nội dung</label>
+
         <textarea asp-for="Content"
                   class="form-control"
                   rows="5"></textarea>
+
+        <span asp-validation-for="Content"
+              class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
         <label>Ảnh hiện tại</label>
-
         <br />
 
         <img src="@Model.ImageUrl"
              width="150"
              class="img-thumbnail" />
-
     </div>
 
     <div class="mb-3">
@@ -57,6 +66,9 @@
             }
 
         </select>
+
+        <span asp-validation-for="CategoryId"
+              class="text-danger"></span>
     </div>
 
     <button type="submit"
@@ -65,3 +77,9 @@
     </button>
 
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

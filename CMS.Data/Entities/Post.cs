@@ -9,19 +9,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace CMS.Data.Entities
 {
     public class Post
     {
         public int Id { get; set; }
-        public string Title { get; set; } // Tiêu đề bài viết
-        public string Content { get; set; } // Nội dung chi tiết
-        public string ImageUrl { get; set; } // Hình ảnh đại diện
+
+        [Required(ErrorMessage = "Tiêu đề bài viết không được để trống")]
+        [StringLength(200,
+            ErrorMessage = "Tiêu đề tối đa 200 ký tự")]
+        public string Title { get; set; }
+
+        [Required(ErrorMessage = "Nội dung bài viết không được để trống")]
+        public string Content { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng chọn hình ảnh")]
+        public string ImageUrl { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        // Khóa ngoại liên kết tới Category
+        [Required(ErrorMessage = "Vui lòng chọn danh mục")]
         public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
-    }
 
+        public virtual Category? Category { get; set; }
+    }
 }
