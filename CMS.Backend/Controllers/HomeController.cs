@@ -1,9 +1,12 @@
-using System.Diagnostics;
-using CMS.Backend.Models;
+﻿using CMS.Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Diagnostics;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Quản trị viên,Biên tập viên")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

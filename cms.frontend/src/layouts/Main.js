@@ -19,7 +19,20 @@ const Main = () => (
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/post/:id" element={<PostDetail />} />
-    </Routes>
+            
+
+                <Route
+                    path="/products"
+                    element={<ProductList />}
+               
+
+                <Route
+                    path="/product/:id"
+                    element={<ProductDetail />}
+                />
+
+           
+        </Routes>
   </main>
 );
 export default Main;

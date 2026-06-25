@@ -16,7 +16,7 @@ namespace CMS.Web.Controllers.API
             _context = context;
         }
 
-        // GET: api/PostApi
+        // GET ALL
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
@@ -30,6 +30,7 @@ namespace CMS.Web.Controllers.API
                     p.Content,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
                     CategoryName = p.Category.Name
                 })
                 .ToListAsync();
@@ -37,7 +38,7 @@ namespace CMS.Web.Controllers.API
             return Ok(posts);
         }
 
-        // GET: api/PostApi/5
+        // GET BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPost(int id)
         {
@@ -51,6 +52,7 @@ namespace CMS.Web.Controllers.API
                     p.Content,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
                     CategoryName = p.Category.Name
                 })
                 .FirstOrDefaultAsync();
@@ -61,7 +63,7 @@ namespace CMS.Web.Controllers.API
             return Ok(post);
         }
 
-        // GET: api/PostApi/latest/3
+        // GET LATEST
         [HttpGet("latest/{count}")]
         public async Task<IActionResult> GetLatestPosts(int count = 3)
         {
@@ -76,11 +78,68 @@ namespace CMS.Web.Controllers.API
                     p.Content,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
                     CategoryName = p.Category.Name
                 })
                 .ToListAsync();
 
             return Ok(posts);
+        }
+
+        // CREATE
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Post model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            model.CreatedDate = DateTime.Now;
+
+            _context.Posts.Add(model);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(model);
+        }
+
+        // UPDATE
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] Post model)
+        {
+            var post = await _context.Posts.FindAsync(id);
+
+            if (post == null)
+                return NotFound();
+
+            post.Title = model.Title;
+            post.Content = model.Content;
+            post.ImageUrl = model.ImageUrl;
+            post.CategoryId = model.CategoryId;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(post);
+        }
+
+        // DELETE
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+
+            if (post == null)
+                return NotFound();
+
+            _context.Posts.Remove(post);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Xóa bài viết thành công"
+            });
         }
     }
 }

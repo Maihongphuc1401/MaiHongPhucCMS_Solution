@@ -1,0 +1,14 @@
+﻿@* @{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+} *@
+<h2>Trang quản trị CMS</h2>
+
+<p>
+    Xin chào:
+    @User.FindFirst("FullName")?.Value
+</p>
+
+<p>
+    Vai trò:
+    @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+</p>

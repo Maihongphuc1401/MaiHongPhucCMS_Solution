@@ -20,6 +20,6 @@ namespace CMS.Data.Entities
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Vai trò không được để trống")]
-        public string Role { get; set; }
+        public string Role { get; set; } = "Người dùng";
     }
 }

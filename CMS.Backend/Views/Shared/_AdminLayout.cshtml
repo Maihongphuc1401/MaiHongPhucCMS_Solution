@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -125,11 +126,6 @@
             Post
         </a>
 
-        <a href="/CategoryProduct">
-            <i class="bi bi-grid"></i>
-            Category Product
-        </a>
-
         <a href="/Product">
             <i class="bi bi-bag"></i>
             Product
@@ -164,8 +160,30 @@
                 Dashboard
             </h4>
 
-            <div>
-                Xin chào, <b>Mai Hồng Phúc</b>
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="text-end">
+
+                    <div>
+                        Xin chào,
+                        <strong>
+                            @(User.FindFirst("FullName")?.Value)
+                        </strong>
+                    </div>
+
+                    <small class="text-secondary">
+                        @User.FindFirst(ClaimTypes.Role)?.Value
+                    </small>
+
+                </div>
+
+                <a asp-controller="Account"
+                   asp-action="Logout"
+                   class="btn btn-outline-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Đăng xuất
+                </a>
+
             </div>
 
         </div>
