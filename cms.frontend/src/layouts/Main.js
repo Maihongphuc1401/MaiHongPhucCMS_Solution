@@ -8,6 +8,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ProfilePage from "../pages/user/ProfilePage"; // Sửa đường dẫn import
 import PostDetail from "../pages/home/PostDetail"
+import ProductList from "../pages/products/ProductList";
 const Main = () => (
   <main>
     <Routes>
@@ -25,7 +26,7 @@ const Main = () => (
                     path="/products"
                     element={<ProductList />}
                
-
+            />
                 <Route
                     path="/product/:id"
                     element={<ProductDetail />}

@@ -1,0 +1,68 @@
+﻿@model CMS.Data.Entities.CategoryProduct
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow">
+
+    <div class="card-header bg-danger text-white">
+
+        <h4>Xóa danh mục sản phẩm</h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="alert alert-warning">
+
+            Bạn có chắc chắn muốn xóa danh mục này?
+
+        </div>
+
+        <table class="table table-bordered">
+
+            <tr>
+
+                <th width="200">
+                    Tên danh mục
+                </th>
+
+                <td>
+                    @Model.Name
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+                    Mô tả
+                </th>
+
+                <td>
+                    @Model.Description
+                </td>
+
+            </tr>
+
+        </table>
+
+        <form asp-action="Delete" method="post">
+
+            <input asp-for="Id" type="hidden" />
+
+            <button class="btn btn-danger">
+                Xóa
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Hủy
+            </a>
+
+        </form>
+
+    </div>
+
+</div>

@@ -1,0 +1,144 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model IEnumerable<CMS.Data.Entities.CategoryProduct>
+
+@{
+    ViewData["Title"] = "Danh mục sản phẩm";
+}
+
+<div class="card shadow">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+            Danh mục sản phẩm
+        </h4>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Thêm mới
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="get" class="row mb-3">
+
+            <div class="col-md-4">
+
+                <input type="text"
+                       name="keyword"
+                       value="@ViewBag.Keyword"
+                       class="form-control"
+                       placeholder="Nhập tên danh mục..." />
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-success">
+                    Tìm kiếm
+                </button>
+
+            </div>
+
+        </form>
+
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["success"]
+            </div>
+        }
+
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["error"]
+            </div>
+        }
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th width="70">
+                        ID
+                    </th>
+
+                    <th>
+                        Tên danh mục
+                    </th>
+
+                    <th>
+                        Mô tả
+                    </th>
+
+                    <th width="120">
+                        Sản phẩm
+                    </th>
+
+                    <th width="250">
+                        Thao tác
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.Id</td>
+
+                        <td>@item.Name</td>
+
+                        <td>@item.Description</td>
+
+                        <td>
+                            @(item.Products?.Count ?? 0)
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-info btn-sm">
+                                Chi tiết
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-warning btn-sm">
+                                Sửa
+                            </a>
+
+                            @if (User.IsInRole("Quản trị viên"))
+                            {
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger btn-sm">
+                                    Xóa
+                                </a>
+                            }
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

@@ -3,7 +3,7 @@ using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using CMS.Backend.ViewModel;
 namespace CMS.Backend.Controllers
 {
     [Authorize(Roles = "Quản trị viên,Biên tập viên")]
@@ -17,11 +17,37 @@ namespace CMS.Backend.Controllers
         }
 
         // DANH SÁCH
-        public IActionResult Index()
+        public IActionResult Index(string keyword = "", int page = 1)
         {
-            var list = _context.Categories.ToList();
+            int pageSize = 5;
 
-            return View(list);
+            var query = _context.Categories.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x =>
+                    x.Name.Contains(keyword));
+            }
+
+            int totalItems = query.Count();
+
+            var data = query
+                .OrderBy(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var model = new PaginationViewModel<Category>
+            {
+                Items = data,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Keyword = keyword
+            };
+
+            return View(model);
         }
 
         // CHI TIẾT

@@ -1,0 +1,91 @@
+﻿@model CMS.Data.Entities.CategoryProduct
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow">
+
+    <div class="card-header bg-info text-white">
+        <h4>Chi tiết danh mục sản phẩm</h4>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th width="220">ID</th>
+                <td>@Model.Id</td>
+            </tr>
+
+            <tr>
+                <th>Tên danh mục</th>
+                <td>@Model.Name</td>
+            </tr>
+
+            <tr>
+                <th>Mô tả</th>
+                <td>@Model.Description</td>
+            </tr>
+
+            <tr>
+                <th>Số sản phẩm</th>
+                <td>@(Model.Products?.Count ?? 0)</td>
+            </tr>
+
+        </table>
+
+        @if (Model.Products != null && Model.Products.Any())
+        {
+            <h5>Sản phẩm thuộc danh mục</h5>
+
+            <table class="table table-striped">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Tồn kho</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+
+                            <td>@p.Id</td>
+
+                            <td>@p.Name</td>
+
+                            <td>@p.Price.ToString("N0") VNĐ</td>
+
+                            <td>@p.StockQuantity</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-warning">
+            Sửa
+        </a>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </div>
+
+</div>

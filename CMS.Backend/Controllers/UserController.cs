@@ -2,6 +2,7 @@
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CMS.Backend.ViewModel;
 
 namespace CMS.Backend.Controllers
 {
@@ -16,9 +17,38 @@ namespace CMS.Backend.Controllers
         }
 
         // Danh sách
-        public IActionResult Index()
+        public IActionResult Index(string keyword = "", int page = 1)
         {
-            return View(_context.Users.ToList());
+            int pageSize = 5;
+
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x =>
+                    x.Username.Contains(keyword) ||
+                    x.FullName.Contains(keyword));
+            }
+
+            int totalItems = query.Count();
+
+            var users = query
+                .OrderBy(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var model = new PaginationViewModel<User>
+            {
+                Items = users,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Keyword = keyword
+            };
+
+            return View(model);
         }
 
         // Chi tiết

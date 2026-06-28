@@ -3,6 +3,7 @@ using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CMS.Backend.ViewModel;
 
 namespace CMS.Backend.Controllers
 {
@@ -21,13 +22,39 @@ namespace CMS.Backend.Controllers
         }
 
         // DANH SÁCH
-        public IActionResult Index()
+        public IActionResult Index(string keyword = "", int page = 1)
         {
-            var posts = _context.Posts
+            int pageSize = 5;
+
+            var query = _context.Posts
                 .Include(x => x.Category)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x =>
+                    x.Title.Contains(keyword));
+            }
+
+            int totalItems = query.Count();
+
+            var posts = query
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            return View(posts);
+            var model = new PaginationViewModel<Post>
+            {
+                Items = posts,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Keyword = keyword
+            };
+
+            return View(model);
         }
 
         // CHI TIẾT

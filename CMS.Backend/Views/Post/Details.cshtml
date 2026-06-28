@@ -1,5 +1,7 @@
 ﻿@model CMS.Data.Entities.Post
-
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 <h2>CHI TIẾT BÀI VIẾT</h2>
 
 <div class="card p-3">
@@ -10,9 +12,9 @@
 
     <h3>@Model.Title</h3>
 
-    <p>
-        @Model.Content
-    </p>
+    <div>
+        @Html.Raw(Model.Content)
+    </div>
 
     <p>
         <b>Ngày tạo:</b>

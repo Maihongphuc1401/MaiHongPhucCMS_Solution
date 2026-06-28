@@ -1,5 +1,7 @@
 ﻿@model CMS.Data.Entities.Post
-
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 <h2 class="text-warning">
     SỬA BÀI VIẾT
 </h2>
@@ -27,8 +29,9 @@
         <label>Nội dung</label>
 
         <textarea asp-for="Content"
+                  id="Content"
                   class="form-control"
-                  rows="5"></textarea>
+                  rows="10"></textarea>
 
         <span asp-validation-for="Content"
               class="text-danger"></span>
@@ -79,7 +82,21 @@
 </form>
 
 @section Scripts {
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+    <script>
+
+        ClassicEditor
+            .create(document.querySelector('#Content'))
+            .catch(error => {
+                console.error(error);
+            });
+
+    </script>
+
 }

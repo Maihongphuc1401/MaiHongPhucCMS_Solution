@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CMS.Backend.ViewModel;
 namespace CMS.Backend.Controllers
 {
     [Authorize]
@@ -21,26 +22,50 @@ namespace CMS.Backend.Controllers
         }
 
         // DANH SÁCH
-        public IActionResult Index()
+        public IActionResult Index(string keyword = "", int categoryId = 0, int page = 1)
         {
-            var data = _context.Products
-                .Include(p => p.CategoryProduct)
-                .Where(p => p.Status == 1)
+            int pageSize = 10;
+
+            ViewBag.CategoryProducts = _context.CategoriesProducts.ToList();
+            ViewBag.CategoryId = categoryId;
+
+            var query = _context.Products
+                .Include(x => x.CategoryProduct)
+                .Where(x => x.Status == 1)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x => x.Name.Contains(keyword));
+            }
+
+            if (categoryId > 0)
+            {
+                query = query.Where(x => x.CategoryProductId == categoryId);
+            }
+
+            int totalItems = query.Count();
+
+            var data = query
+                .OrderBy(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            return View(data);
-        }
+            var model = new PaginationViewModel<Product>
+            {
+                Items = data,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Keyword = keyword
+            };
 
+            return View(model);
+        }
         // THÙNG RÁC
-        public IActionResult Trash()
-        {
-            var data = _context.Products
-                .Include(p => p.CategoryProduct)
-                .Where(p => p.Status == 0)
-                .ToList();
 
-            return View(data);
-        }
 
         // CHI TIẾT
         public IActionResult Details(int id)
@@ -228,6 +253,48 @@ namespace CMS.Backend.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Trash");
+        }
+        public IActionResult Trash(string keyword = "", int categoryId = 0, int page = 1)
+        {
+            int pageSize = 10;
+
+            ViewBag.CategoryProducts = _context.CategoriesProducts.ToList();
+            ViewBag.CategoryId = categoryId;
+
+            var query = _context.Products
+                .Include(x => x.CategoryProduct)
+                .Where(x => x.Status == 0)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(x => x.Name.Contains(keyword));
+            }
+
+            if (categoryId > 0)
+            {
+                query = query.Where(x => x.CategoryProductId == categoryId);
+            }
+
+            int totalItems = query.Count();
+
+            var data = query
+                .OrderBy(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var model = new PaginationViewModel<Product>
+            {
+                Items = data,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Keyword = keyword
+            };
+
+            return View(model);
         }
     }
 }

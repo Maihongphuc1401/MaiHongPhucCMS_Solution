@@ -1,8 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-@model IEnumerable<CMS.Data.Entities.Customer>
-
+@model CMS.Backend.ViewModel.PaginationViewModel<CMS.Data.Entities.Customer>
 <h2 class="text-primary">
     DANH SÁCH KHÁCH HÀNG
 </h2>
@@ -11,7 +10,22 @@
    class="btn btn-success mb-3">
     Thêm khách hàng
 </a>
+<form method="get" class="row mb-3">
 
+    <div class="col-md-4">
+        <input name="keyword"
+               value="@Model.Keyword"
+               class="form-control"
+               placeholder="Tìm tên, email, SĐT..." />
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary">
+            Tìm kiếm
+        </button>
+    </div>
+
+</form>
 <table class="table table-bordered">
     <thead class="table-dark">
         <tr>
@@ -25,7 +39,7 @@
     </thead>
 
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>@item.Id</td>
@@ -56,3 +70,47 @@
         }
     </tbody>
 </table>
+<nav>
+
+<ul class="pagination">
+
+@if (Model.CurrentPage > 1)
+{
+    <li class="page-item">
+        <a class="page-link"
+           asp-route-page="@(Model.CurrentPage-1)"
+           asp-route-keyword="@Model.Keyword">
+                    <i class="bi bi-chevron-left"></i>
+        </a>
+    </li>
+}
+
+@for (int i = 1; i <= Model.TotalPages; i++)
+{
+    <li class="page-item @(i==Model.CurrentPage?"active":"")">
+
+        <a class="page-link"
+           asp-route-page="@i"
+           asp-route-keyword="@Model.Keyword">
+
+            @i
+
+        </a>
+
+    </li>
+}
+
+@if (Model.CurrentPage < Model.TotalPages)
+{
+    <li class="page-item">
+        <a class="page-link"
+           asp-route-page="@(Model.CurrentPage+1)"
+           asp-route-keyword="@Model.Keyword">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+    </li>
+}
+
+</ul>
+
+</nav>

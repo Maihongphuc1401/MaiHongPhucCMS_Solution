@@ -2,7 +2,7 @@
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using CMS.Backend.ViewModel;
 namespace CMS.Backend.Controllers
 {
     [Authorize(Roles = "Quản trị viên,Biên tập viên")]
@@ -15,9 +15,39 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string keyword = "", int page = 1)
         {
-            return View(_context.Customers.ToList());
+            int pageSize = 5;
+
+            var query = _context.Customers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(x =>
+                    x.FullName.Contains(keyword) ||
+                    x.Email.Contains(keyword) ||
+                    x.Phone.Contains(keyword));
+            }
+
+            int totalItems = query.Count();
+
+            var data = query
+                .OrderBy(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var model = new PaginationViewModel<Customer>
+            {
+                Items = data,
+                CurrentPage = page,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                PageSize = pageSize,
+                Keyword = keyword
+            };
+
+            return View(model);
         }
 
         public IActionResult Create()
@@ -71,6 +101,15 @@ namespace CMS.Backend.Controllers
             TempData["success"] = "Cập nhật khách hàng thành công";
 
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Details(int id)
+        {
+            var customer = _context.Customers.Find(id);
+
+            if (customer == null)
+                return NotFound();
+
+            return View(customer);
         }
     }
 }

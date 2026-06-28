@@ -2,7 +2,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@model IEnumerable<CMS.Data.Entities.Product>
+@model CMS.Backend.ViewModel.PaginationViewModel<CMS.Data.Entities.Product>
 
 <h2 class="text-primary mb-3">
     DANH SÁCH SẢN PHẨM
@@ -17,7 +17,40 @@
    class="btn btn-danger mb-3">
     Thùng rác
 </a>
+<form method="get">
+    <div class="row">
 
+        <div class="col-md-4">
+            <input name="keyword"
+                   value="@Model.Keyword"
+                   class="form-control"
+                   placeholder="Tên sản phẩm..." />
+        </div>
+
+        <div class="col-md-3">
+            <select name="categoryId" class="form-select">
+
+                <option value="0">Tất cả danh mục</option>
+
+                @foreach (var c in ViewBag.CategoryProducts)
+                {
+                    <option value="@c.Id"
+                            selected="@(ViewBag.CategoryId == c.Id)">
+                        @c.Name
+                    </option>
+                }
+
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success">
+                Tìm kiếm
+            </button>
+        </div>
+
+    </div>
+</form>
 <table class="table table-bordered table-hover">
 
     <thead class="table-dark">
@@ -34,7 +67,7 @@
 
     <tbody>
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
 
@@ -83,5 +116,24 @@
         }
 
     </tbody>
-
 </table>
+<nav class="mt-3">
+    <ul class="pagination">
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-keyword="@Model.Keyword"
+                   asp-route-categoryId="@ViewBag.CategoryId">
+                    @i
+                </a>
+
+            </li>
+        }
+
+    </ul>
+</nav>
