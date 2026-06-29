@@ -8,7 +8,10 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ProfilePage from "../pages/user/ProfilePage"; // Sửa đường dẫn import
 import PostDetail from "../pages/home/PostDetail"
+//import ProductList from "../pages/products/ProductList";
 import ProductList from "../pages/products/ProductList";
+import PostList from "../pages/home/PostList";
+import About from "../pages/about/About";
 const Main = () => (
   <main>
     <Routes>
@@ -20,18 +23,12 @@ const Main = () => (
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/post/:id" element={<PostDetail />} />
-            
+                
+            <Route path="/products" element={<ProductList />} />
 
-                <Route
-                    path="/products"
-                    element={<ProductList />}
-               
-            />
-                <Route
-                    path="/product/:id"
-                    element={<ProductDetail />}
-                />
+            <Route path="/posts" element={<PostList />} />
 
+            <Route path="/about" element={<About />} />
            
         </Routes>
   </main>

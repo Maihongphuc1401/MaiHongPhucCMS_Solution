@@ -73,7 +73,7 @@ const Header = () => {
               height="40"
               className="me-2"
             />
-            <span className="fw-bold fs-5 text-primary">E-Shop</span>
+            <span className="fw-bold fs-5 text-primary">PhucCMS-Shop</span>
           </Link>
 
           {/* Thanh tìm kiếm */}
@@ -176,30 +176,35 @@ const Header = () => {
         </div>
 
         {/* Thanh menu */}
-        <nav className="navbar navbar-expand mt-3 pt-2 border-top header-menu">
-          <ul className="navbar-nav mx-auto text-uppercase fw-semibold">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Trang chủ
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">
-                Thời trang
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">
-                Điện tử
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">
-                Khuyến mãi
-              </Link>
-            </li>
-          </ul>
-        </nav>
+              <nav className="navbar navbar-expand mt-3 pt-2 border-top header-menu">
+                  <ul className="navbar-nav mx-auto text-uppercase fw-semibold">
+
+                      <li className="nav-item">
+                          <Link className="nav-link" to="/">
+                              Trang chủ
+                          </Link>
+                      </li>
+
+                      <li className="nav-item">
+                          <Link className="nav-link" to="/products">
+                              Sản phẩm
+                          </Link>
+                      </li>
+
+                      <li className="nav-item">
+                          <Link className="nav-link" to="/posts">
+                              Bài viết
+                          </Link>
+                      </li>
+
+                      <li className="nav-item">
+                          <Link className="nav-link" to="/about">
+                              Giới thiệu
+                          </Link>
+                      </li>
+
+                  </ul>
+              </nav>
       </div>
     </header>
   );
