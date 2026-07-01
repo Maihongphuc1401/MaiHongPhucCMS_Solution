@@ -10,43 +10,45 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // 🧠 Khi load app -> đọc từ localStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    // 🧠 Khi load app -> đọc từ localStorage
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
 
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
+        if (storedUser) {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
 
-      // ✅ Nếu có userId -> load lại hồ sơ mới nhất
-      if (parsed.userId) {
-        userService
-          .getUserById(parsed.userId)
-          .then((freshUser) => {
-            // Gộp dữ liệu: token từ local, info từ backend
-            const updatedUser = {
-              userId: parsed.userId,
-              email: freshUser.email || parsed.email,
-              firstName: freshUser.firstName,
-              lastName: freshUser.lastName,
-              mobileNumber: freshUser.mobileNumber,
-              role: parsed.role || "ROLE_USER",
-              token: parsed.token,
-              decoded: parsed.decoded || jwtDecode(parsed.token),
-            };
+            // ✅ Nếu có userId -> load lại hồ sơ mới nhất từ CustomerApi
+            if (parsed.userId) {
+                userService
+                    .getUserById(parsed.userId)
+                    .then((freshUser) => {
+                        // Gộp dữ liệu tương thích hoàn toàn với DB Customer của bạn
+                        const updatedUser = {
+                            userId: parsed.userId,
+                            email: freshUser.email || parsed.email,
+                            fullName: freshUser.fullName || parsed.fullName, // 🌟 Thay cho firstName / lastName
+                            phone: freshUser.phone,                         // 🌟 Thay cho mobileNumber
+                            address: freshUser.address,                     // 🌟 Thêm thuộc tính địa chỉ từ DB
+                            role: parsed.role || "Customer",
+                            token: parsed.token,
+                            // Nếu API không dùng JWT Token thì loại bỏ phần decode để tránh crash ứng dụng
+                            decoded: parsed.token ? (parsed.decoded || jwtDecode(parsed.token)) : null,
+                        };
 
-            setUser(updatedUser);
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-          })
-          .catch((err) =>
-            console.error("⚠️ Lỗi khi load lại hồ sơ:", err.message)
-          );
-      }
+                        setUser(updatedUser);
+                        localStorage.setItem("user", JSON.stringify(updatedUser));
+                    })
+                    .catch((err) =>
+                        console.error("⚠️ Lỗi khi load lại hồ sơ khách hàng:", err.message)
+                    );
+            }
 
-      console.log("🔐 User từ localStorage:", parsed);
-    }
+            console.log("🔐 User từ localStorage:", parsed);
+        }
 
-    setLoading(false);
-  }, []);
+        setLoading(false);
+    }, []);
 
   // 🟢 Đăng nhập
   const login = async (email, password) => {

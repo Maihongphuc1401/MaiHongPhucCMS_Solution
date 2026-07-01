@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using BCrypt.Net;
+using CMS.Data;
+using CMS.Data.DTOS;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Controllers
 {
@@ -8,18 +11,17 @@ namespace CMS.Controllers
     [Route("api/[controller]")]
     public class CustomerApiController : ControllerBase
     {
-        private readonly YourDbContext _context; // Thay bằng tên DbContext của bạn
+        private readonly ApplicationDbContext _context;
 
-        public CustomerApiController(YourDbContext context)
+        public CustomerApiController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // 1. API ĐĂNG KÝ
+        // 1. API ĐĂNG KÝ (Nhận vào CustomerRegisterDto)
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Customer customer)
+        public async Task<IActionResult> Register([FromBody] CustomerRegisterDto dto)
         {
-            // Kiểm tra validate [Required], [EmailAddress] từ Entity Customer
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -27,31 +29,46 @@ namespace CMS.Controllers
 
             // Kiểm tra trùng Email
             var isExist = await _context.Customers
-                .AnyAsync(c => c.Email.ToLower() == customer.Email.ToLower());
+                .AnyAsync(c => c.Email.ToLower() == dto.Email.ToLower());
             if (isExist)
             {
-                return BadRequest(new { message = "⚠️ Email này đã được đăng ký hệ thống!" });
+                return BadRequest(new { message = "⚠️ Email này đã được đăng ký trên hệ thống!" });
             }
 
-            // Vì 'customer' đã là Entity rồi nên add thẳng vào Database luôn
+            // 🌟 ÁNH XẠ (MAPPING) TỪ DTO SANG ENTITY ĐỂ LƯU VÀO DB
+            var customer = new Customer
+            {
+                FullName = dto.FullName.Trim(),
+                Email = dto.Email.Trim(),
+                Phone = dto.Phone.Trim(),
+                Address = dto.Address.Trim(),
+                // Mã hóa mật khẩu từ DTO trước khi gán vào Entity
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password.Trim())
+            };
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "🎉 Đăng ký thành công!" });
+            return Ok(new { message = "🎉 Đăng ký tài khoản thành công!" });
         }
 
-        // 2. API ĐĂNG NHẬP
+        // 2. API ĐĂNG NHẬP (Nhận vào CustomerLoginDto)
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Customer loginData)
+        public async Task<IActionResult> Login([FromBody] CustomerLoginDto dto)
         {
-            // Tìm khách hàng theo Email
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.Email.ToLower() == loginData.Email.ToLower());
-
-            // Kiểm tra mật khẩu (so sánh chuỗi thô theo code hiện tại của bạn)
-            if (customer == null || customer.Password != loginData.Password)
+            if (!ModelState.IsValid)
             {
-                return Unauthorized(new { message = "⚠️ Sai tài khoản hoặc mật khẩu!" });
+                return BadRequest(ModelState);
+            }
+
+            // Tìm khách hàng theo email
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.Email.ToLower() == dto.Email.ToLower());
+
+            // Kiểm tra mật khẩu băm BCrypt
+            if (customer == null || !BCrypt.Net.BCrypt.Verify(dto.Password, customer.Password))
+            {
+                return Unauthorized(new { message = "⚠️ Tài khoản hoặc mật khẩu không chính xác!" });
             }
 
             return Ok(new
@@ -63,6 +80,27 @@ namespace CMS.Controllers
                     fullName = customer.FullName,
                     email = customer.Email
                 }
+            });
+        }
+        // GET: api/CustomerApi/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCustomerById(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+
+            if (customer == null)
+            {
+                return NotFound(new { message = "❌ Không tìm thấy khách hàng này!" });
+            }
+
+            // Trả về thông tin cơ bản
+            return Ok(new
+            {
+                id = customer.Id,
+                fullName = customer.FullName,
+                email = customer.Email,
+                phone = customer.Phone,
+                address = customer.Address
             });
         }
     }

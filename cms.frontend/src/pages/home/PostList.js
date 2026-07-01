@@ -2,7 +2,9 @@
 import { Link } from "react-router-dom";
 import postService from "../../services/postService";
 import { FaSearch, FaEye } from "react-icons/fa";
-import "../home/Recommended.css"; // Tái sử dụng CSS giao diện bộ lọc & phân trang đẹp
+import "../home/Recommended.css";
+
+const FALLBACK_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23f1f5f9'/><text x='50%' y='50%' font-family='sans-serif' font-size='6' fill='%2394a3b8' dominant-baseline='middle' text-anchor='middle'>No Image</text></svg>";
 
 const PostList = () => {
     const [posts, setPosts] = useState([]);
@@ -11,10 +13,9 @@ const PostList = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 6; // Đặt 6 bài viết trên 1 trang cho cân đối (lưới 3 cột)
+    const postsPerPage = 6;
     const sectionRef = useRef(null);
 
-    // 1. Tải toàn bộ bài viết từ API
     const loadPosts = async () => {
         try {
             const data = await postService.getAllPosts();
@@ -28,7 +29,6 @@ const PostList = () => {
         loadPosts();
     }, []);
 
-    // 2. Tự động trích xuất danh mục tin tức (nếu bài viết có trường categoryName hoặc tương đương)
     useEffect(() => {
         if (posts.length > 0) {
             const uniqueCategories = Array.from(
@@ -38,7 +38,6 @@ const PostList = () => {
         }
     }, [posts]);
 
-    // 3. Tự động cuộn lên đầu danh sách bài viết khi chuyển trang
     useEffect(() => {
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView({
@@ -48,7 +47,6 @@ const PostList = () => {
         }
     }, [currentPage]);
 
-    // 4. Logic Tìm kiếm theo tiêu đề + Lọc theo danh mục bài viết
     const filteredPosts = posts.filter((post) => {
         const matchesSearch = post.title
             ?.toLowerCase()
@@ -61,7 +59,6 @@ const PostList = () => {
         return matchesSearch && matchesCategory;
     });
 
-    // 5. Tính toán phân trang
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
@@ -69,13 +66,11 @@ const PostList = () => {
 
     return (
         <section ref={sectionRef} className="recommended container py-5">
-            {/* Tiêu đề */}
             <div className="text-center mb-5">
                 <h2 className="fw-bold text-dark mb-2">📰 Tin Tức Mới Nhất</h2>
                 <p className="text-secondary">Cập nhật xu hướng, mẹo vặt và tin tức công nghệ mới nhất</p>
             </div>
 
-            {/* Thanh Tìm kiếm + Bộ lọc Tin tức */}
             <div className="search-filter-wrapper mb-5 d-flex justify-content-center align-items-center gap-3 flex-wrap">
                 <div className="search-bar">
                     <FaSearch className="search-icon" />
@@ -85,19 +80,18 @@ const PostList = () => {
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
-                            setCurrentPage(1); // Reset về trang 1 khi gõ tìm kiếm
+                            setCurrentPage(1);
                         }}
                     />
                 </div>
 
-                {/* Chỉ hiển thị Dropdown lọc danh mục nếu dữ liệu bài viết thực sự có danh mục */}
                 {categories.length > 0 && (
                     <select
                         className="category-select"
                         value={selectedCategory}
                         onChange={(e) => {
                             setSelectedCategory(e.target.value);
-                            setCurrentPage(1); // Reset về trang 1 khi đổi danh mục
+                            setCurrentPage(1);
                         }}
                     >
                         <option value="All">Tất cả chuyên mục</option>
@@ -110,15 +104,13 @@ const PostList = () => {
                 )}
             </div>
 
-            {/* Danh sách bài viết bài viết */}
             <div className="row">
                 {currentPosts.length === 0 ? (
-                    <div className="col-100 text-center py-5">
+                    <div className="col-120 text-center py-5">
                         <p className="text-muted fs-5">Không tìm thấy bài viết nào phù hợp</p>
                     </div>
                 ) : (
                     currentPosts.map((post) => {
-                        // Kiểm tra đường dẫn ảnh tuyệt đối hay tương đối
                         const imageSrc = post.imageUrl?.startsWith("http")
                             ? post.imageUrl
                             : `http://localhost:5114${post.imageUrl}`;
@@ -126,8 +118,6 @@ const PostList = () => {
                         return (
                             <div className="col-lg-4 col-md-6 mb-4" key={post.id}>
                                 <div className="card h-100 shadow-sm border-0 product-card" style={{ borderRadius: "15px", overflow: "hidden" }}>
-
-                                    {/* Khung ảnh bài viết */}
                                     <div style={{ position: "relative", overflow: "hidden", height: "220px" }}>
                                         <img
                                             src={imageSrc}
@@ -136,15 +126,18 @@ const PostList = () => {
                                             style={{ objectFit: "cover", transition: "transform 0.3s ease" }}
                                             onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"}
                                             onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = FALLBACK_IMAGE;
+                                            }}
                                         />
                                         {post.categoryName && (
-                                            <span className="badge bg-orange position-absolute top-0 start-0 m-3 shadow-sm" style={{ background: "#ff7b42", color: "#fff", padding: "6px 12px", borderRadius: "20px", fontSize: "12px" }}>
+                                            <span className="badge position-absolute top-0 start-0 m-3 shadow-sm" style={{ background: "#ff7b42", color: "#fff", padding: "6px 12px", borderRadius: "20px", fontSize: "12px" }}>
                                                 {post.categoryName}
                                             </span>
                                         )}
                                     </div>
 
-                                    {/* Nội dung tóm tắt */}
                                     <div className="card-body d-flex flex-column justify-content-between p-4">
                                         <div>
                                             <h5 className="card-title fw-bold text-dark text-truncate-2 mb-3" style={{ lineHeight: "1.4", height: "48px", overflow: "hidden" }}>
@@ -174,7 +167,6 @@ const PostList = () => {
                 )}
             </div>
 
-            {/* Thanh điều hướng phân trang số thông minh */}
             {totalPages > 1 && (
                 <div className="pagination-wrapper mt-5">
                     <button
@@ -214,10 +206,7 @@ const PostList = () => {
                                 {endPage < totalPages && (
                                     <>
                                         <span className="page-dots">...</span>
-                                        <button
-                                            className="page-btn"
-                                            onClick={() => setCurrentPage(totalPages)}
-                                        >
+                                        <button className="page-btn" onClick={() => setCurrentPage(totalPages)}>
                                             {totalPages}
                                         </button>
                                     </>

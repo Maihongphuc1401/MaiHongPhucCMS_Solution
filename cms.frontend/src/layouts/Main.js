@@ -12,6 +12,7 @@ import PostDetail from "../pages/home/PostDetail"
 import ProductList from "../pages/products/ProductList";
 import PostList from "../pages/home/PostList";
 import About from "../pages/about/About";
+import Checkout from "../pages/checkout/Checkout";
 const Main = () => (
   <main>
     <Routes>
@@ -29,7 +30,7 @@ const Main = () => (
             <Route path="/posts" element={<PostList />} />
 
             <Route path="/about" element={<About />} />
-           
+            <Route path="/checkout" element={<Checkout />} />
         </Routes>
   </main>
 );
